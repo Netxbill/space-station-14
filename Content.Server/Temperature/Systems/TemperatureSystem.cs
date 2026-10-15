@@ -89,7 +89,10 @@ public sealed partial class TemperatureSystem : SharedTemperatureSystem
     private void OnBeforeHeatExchange(Entity<TemperatureProtectionComponent> entity, ref BeforeHeatExchangeEvent args)
     {
         // TODO: Proper coverage modifiers!!! This should be its own system which relays to inventory and then based on coverage spits out a modifier!
-        args.HeatTransferModifier *= entity.Comp.Coefficient;
+        var coefficient = args.Heating
+            ? entity.Comp.HeatingCoefficient ?? entity.Comp.Coefficient
+            : entity.Comp.CoolingCoefficient ?? entity.Comp.Coefficient;
+        args.HeatTransferModifier *= coefficient;
     }
 
     private void ChangeTemperatureOnCollide(Entity<ChangeTemperatureOnCollideComponent> ent, ref ProjectileHitEvent args)
