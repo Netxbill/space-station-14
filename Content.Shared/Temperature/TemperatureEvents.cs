@@ -11,6 +11,11 @@ public record struct BeforeHeatExchangeEvent() : IInventoryRelayEvent
     public SlotFlags TargetSlots { get; } = ~SlotFlags.POCKET;
 
     /// <summary>
+    /// Whether the entity is receiving heat during this exchange.
+    /// </summary>
+    public bool Heating;
+
+    /// <summary>
     /// A multiplicative modifier for heat transfers on the entity this event is being raised to.
     /// </summary>
     public float HeatTransferModifier = 1f;
