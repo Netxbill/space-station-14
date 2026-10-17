@@ -244,6 +244,26 @@ public sealed class AirtightTest : AtmosTest
     }
 
     /// <summary>
+    /// Tests that a closed material door keeps the atmosphere on its tile.
+    /// </summary>
+    [Test]
+    [RunOnSide(Side.Server)]
+    public void MaterialDoor_RetainsAtmosphereWhenClosed()
+    {
+        // Ensure grid/atmos is initialized before placing the door.
+        SAtmos.RunProcessingFull(ProcessEnt, MapData.Grid.Owner, SAtmos.AtmosTickRate);
+
+        var tile = RelevantAtmos.Comp.Tiles[Vector2i.Zero];
+        SetTilePressure(tile, Atmospherics.OneAtmosphere);
+
+        SSpawnAtPosition("WoodDoor", new EntityCoordinates(RelevantAtmos.Owner, Vector2.Zero));
+        SAtmos.RunProcessingFull(ProcessEnt, MapData.Grid.Owner, SAtmos.AtmosTickRate);
+
+        Assert.That(tile.Air, Is.Not.Null, "A closed material door should not remove the atmosphere from its tile.");
+        Assert.That(tile.Air!.TotalMoles, Is.GreaterThan(0f), "A closed material door should retain breathable gas on its tile.");
+    }
+
+    /// <summary>
     /// Tests that an airtight reconstruction reflects properly after an entity is deleted.
     /// </summary>
     [Test]
